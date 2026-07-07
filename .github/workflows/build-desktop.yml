@@ -1,6 +1,8 @@
 name: Desktop App Build (Lite Client)
 
 on:
+  schedule:
+    - cron: '0 19 * * *'
   workflow_dispatch:
     inputs:
       git_ref:
@@ -39,7 +41,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: NousResearch/hermes-agent
-          ref: ${{ github.event.inputs.git_ref }}
+          ref: ${{ github.event.inputs.git_ref || 'main' }}
           fetch-depth: 1
 
       - name: Read upstream version
@@ -52,7 +54,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: latest
           cache: npm
           cache-dependency-path: package-lock.json
 
@@ -71,7 +73,8 @@ jobs:
           npm --prefix apps/desktop run builder -- \
             ${{ matrix.build_args }} \
             --publish never \
-            --config.extraMetadata.version="${{ steps.version.outputs.version }}"
+            --config.extraMetadata.version="${{ steps.version.outputs.version }}" \
+            --config.extraMetadata.homepage="https://hermes-agent.nousresearch.com"
 
       - name: Generate SHA256 checksums
         shell: bash
