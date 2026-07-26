@@ -36,7 +36,7 @@ jobs:
         if: matrix.platform == 'linux'
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq libfuse2 rpm
+          sudo apt-get install -y -qq libfuse2 rpm yq
 
       - uses: actions/checkout@v6
         with:
@@ -48,7 +48,7 @@ jobs:
         id: version
         shell: bash
         run: |
-          v=$(node -p "require('./apps/desktop/package.json').version")
+          v=$(yq .project.version pyproject.toml)
           echo "version=$v" >> "$GITHUB_OUTPUT"
           echo "Upstream version: $v"
 
@@ -86,7 +86,7 @@ jobs:
           done > SHA256SUMS-${{ matrix.platform }}.txt
           cat SHA256SUMS-${{ matrix.platform }}.txt
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: desktop-${{ matrix.platform }}
           path: |
