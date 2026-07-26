@@ -36,7 +36,12 @@ jobs:
         if: matrix.platform == 'linux'
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq libfuse2 rpm yq
+          sudo apt-get install -y -qq libfuse2 rpm
+          
+      - name: Install Windows system deps (yq)
+        if: matrix.platform == 'win'
+        run: |
+          choco install yq
 
       - uses: actions/checkout@v6
         with:
@@ -48,7 +53,7 @@ jobs:
         id: version
         shell: bash
         run: |
-          v=$(yq .project.version pyproject.toml)
+          v=$(yq .project.version ./pyproject.toml)
           echo "version=$v" >> "$GITHUB_OUTPUT"
           echo "Upstream version: $v"
 
