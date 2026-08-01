@@ -57,7 +57,7 @@ jobs:
           echo "version=$v" >> "$GITHUB_OUTPUT"
           echo "Upstream version: $v"
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v4
         with:
           node-version: latest
           cache: npm
@@ -91,7 +91,7 @@ jobs:
           done > SHA256SUMS-${{ matrix.platform }}.txt
           cat SHA256SUMS-${{ matrix.platform }}.txt
 
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: desktop-${{ matrix.platform }}
           path: |
